@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/outraActivityMi"
+        android:title="OutraActivity"
+        app:showAsAction="never"/>
+    <item
+        android:title="Outras intents"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/viewMi"
+                android:title="Navegador"/>
+            <item
+                android:id="@+id/callMi"
+                android:title="ligação"/>
+            <item
+                android:id="@+id/dialMi"
+                android:title="discador"/>
+            <item
+                android:id="@+id/pickMi"
+                android:title="pegar arquivo"/>
+            <item
+                android:id="@+id/chooserMi"
+                android:title="Escolher"/>
+        </menu>
+    </item>
+</menu>
