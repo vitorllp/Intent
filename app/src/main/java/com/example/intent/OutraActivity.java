@@ -2,6 +2,7 @@ package com.example.intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,15 +12,18 @@ import com.example.intent.databinding.ActivityOutraBinding;
 public class OutraActivity extends AppCompatActivity {
 
     private ActivityOutraBinding activityOutraBinding;
+
+    public static final String RETORNO = "RETORNO";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityOutraBinding = ActivityOutraBinding.inflate(getLayoutInflater());
         setContentView(activityOutraBinding.getRoot());
         //recebendo
-        Bundle parametrosBundle = getIntent().getExtras();
-        if(parametrosBundle != null){
-            String parametro = parametrosBundle.getString(MainActivity.PARAMETRO,"");
+        //Bundle parametrosBundle = getIntent().getExtras();
+        String parametro= getIntent().getStringExtra(MainActivity.PARAMETRO);
+        if(parametro != null){
+            //String parametro = parametrosBundle.getString(MainActivity.PARAMETRO,"");
             activityOutraBinding.recebidoTv.setText(parametro);
         }
         Log.v(getString(R.string.app_name)+"/"+getLocalClassName(),"OnCreate:iniciando ciclo completo");
@@ -27,6 +31,10 @@ public class OutraActivity extends AppCompatActivity {
     }
 
     public void onClick(View view){
+        //retornando para main activity
+        Intent retornoIntent = new Intent();
+        retornoIntent.putExtra(RETORNO,activityOutraBinding.retornoEt.getText().toString());
+        setResult(RESULT_OK,retornoIntent);
         finish();//chama na sequencia on pause, onstop, ondestroy
     }
 
