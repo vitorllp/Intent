@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     //const
     public static final String PARAMETRO = "PARAMETRO";
     private final int OUTRA_ACTIVITY_REQUEST_CODE = 0;
+    private final int CALL_PHONE_PERMISSION_REQUEST_CODE = 1;
+    // request code para pegar um arquivo de imagem
+    private final int PICK_IMAGE_FILE_REQUEST_CODE = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +100,20 @@ public class MainActivity extends AppCompatActivity {
             case R.id.callMi:
                 verifyCallPhonePermission();
                 return true;
+            case R.id.dialMi:
+                Intent discarIntent = new Intent(Intent.ACTION_DIAL);
+                discarIntent.setData(Uri.parse("tel: " + activityMainBinding.paremetroEt.getText().toString()));
+                startActivity(discarIntent);
+                return true;
+
+            case R.id.pickMi:
+                Intent pegarImagemIntent = new Intent(Intent.ACTION_PICK);
+                String diretorioImagens =
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath();
+                pegarImagemIntent.setDataAndType(Uri.parse(diretorioImagens), "image/*");
+
+                startActivityForResult(pegarImagemIntent,PICK_IMAGE_FILE_REQUEST_CODE);
+                return true;
         }
         return false;
     }
@@ -107,12 +125,27 @@ public class MainActivity extends AppCompatActivity {
             if(checkSelfPermission(Manifest.permission.CALL_PHONE)==PackageManager.PERMISSION_GRANTED){
                 startActivity(ligarIntent);
             } else {
-
+                requestPermissions(new String[]{Manifest.permission.CALL_PHONE},CALL_PHONE_PERMISSION_REQUEST_CODE);
             }
         } else {
             startActivity(ligarIntent);
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CALL_PHONE_PERMISSION_REQUEST_CODE) {
+            if (permissions[0].equals(Manifest.permission.CALL_PHONE) &&
+                    grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permissão de ligação necessária para essa funcionalidade", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                verifyCallPhonePermission();
+            }
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -121,6 +154,12 @@ public class MainActivity extends AppCompatActivity {
             String retorno = data.getStringExtra(OutraActivity.RETORNO);
             if(retorno != null){
                 activityMainBinding.retornoTv.setText(retorno);
+            }
+        } else {
+            if (requestCode == PICK_IMAGE_FILE_REQUEST_CODE && resultCode == RESULT_OK) {
+                Uri imageUri = data.getData();
+                Intent visualizarImagem = new Intent(Intent.ACTION_VIEW, imageUri);
+                startActivity(visualizarImagem);
             }
         }
     }

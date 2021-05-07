@@ -4,6 +4,7 @@
 
     <!-- PERMISSOES DE VERSOES ABAIXO DO MARSSHMELLOW sao feitas direto pelo manifest-->
     <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- FIM -->
 
     <application
